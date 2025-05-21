@@ -39,3 +39,4 @@ jobs:
           else
             git commit -m "Update pizza seed data"
             git push
+          fi
