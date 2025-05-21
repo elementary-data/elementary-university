@@ -22,6 +22,8 @@ jobs:
           python create_pizza_data.py
           mv raw_pizza_sales.csv ../seeds/raw_pizza_sales.csv
           mv ingredients.csv ../seeds/ingredients.csv
+      - name: Install git
+        run: apt-get update && apt-get install -y git
       - name: Commit seed data
         run: |
           git config user.name "github-actions[bot]"
@@ -32,4 +34,3 @@ jobs:
           else
             git commit -m "Update pizza seed data"
             git push
-          fi
