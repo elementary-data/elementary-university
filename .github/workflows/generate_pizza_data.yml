@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: "actions/checkout@v4"
       - name: Install uv
-        run: python -m pip install uv
+        run: python -m pip install --no-cache-dir uv
       - name: Install dependencies
         run: uv pip install -r requirements.txt --system
       - name: Generate pizza data
@@ -22,3 +22,14 @@ jobs:
           python create_pizza_data.py
           mv raw_pizza_sales.csv ../seeds/raw_pizza_sales.csv
           mv ingredients.csv ../seeds/ingredients.csv
+      - name: Commit seed data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add seeds/raw_pizza_sales.csv seeds/ingredients.csv
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Update pizza seed data"
+            git push
+          fi
