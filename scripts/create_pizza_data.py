@@ -1,8 +1,10 @@
 # Cell 1: Imports
 import csv
 import random
-from faker import Faker
+import uuid
 from datetime import datetime, timedelta
+
+from faker import Faker
 
 # Cell 2: Load base pizza data from CSV
 pizza_data = []
@@ -43,6 +45,13 @@ with open("ingredients.csv", "w", newline='', encoding='utf-8') as f:
     for name, idx in ingredient_to_id.items():
         writer.writerow([idx, name])
 
+# Load existing customer ids from jaffle-data
+customer_ids = []
+with open("jaffle-data/raw_customers.csv", newline="", encoding="utf-8") as f:
+    reader = csv.DictReader(f)
+    for row in reader:
+        customer_ids.append(row["id"])
+
 # Cell 4: Generate synthetic pizza sales
 fake = Faker()
 start_date = datetime(2025, 1, 1)
@@ -57,11 +66,15 @@ def generate_sales_for_day(day_index, num_orders=None):
     global pizza_id_counter, order_id_counter
     day = start_date + timedelta(days=day_index)
     num_orders = num_orders if num_orders is not None else random.randint(5, 20)
-    
+
     for _ in range(num_orders):
         order_time = fake.time()
         num_items = random.randint(1, 5)
-        
+        if random.random() < 0.7:
+            order_customer_id = random.choice(customer_ids)
+        else:
+            order_customer_id = str(uuid.uuid4())
+
         for _ in range(num_items):
             pizza = random.choice(unique_pizzas)
             quantity = random.randint(1, 3)
@@ -74,6 +87,7 @@ def generate_sales_for_day(day_index, num_orders=None):
             output_rows.append([
                 pizza_id_counter,
                 order_id_counter,
+                order_customer_id,
                 pizza["pizza_name_id"],
                 quantity,
                 day.strftime('%m/%d/%Y'),
@@ -106,9 +120,20 @@ if 0 <= yesterday_index <= delta.days:
 with open("raw_pizza_sales.csv", "w", newline='', encoding='utf-8') as f:
     writer = csv.writer(f)
     writer.writerow([
-        "pizza_id", "order_id", "pizza_name_id", "quantity", "order_date", "order_time",
-        "unit_price", "total_price", "pizza_size", "pizza_category", "pizza_name",
-        "ingredient_names", "ingredient_ids"
+        "pizza_id",
+        "order_id",
+        "customer_id",
+        "pizza_name_id",
+        "quantity",
+        "order_date",
+        "order_time",
+        "unit_price",
+        "total_price",
+        "pizza_size",
+        "pizza_category",
+        "pizza_name",
+        "ingredient_names",
+        "ingredient_ids",
     ])
     writer.writerows(output_rows)
 

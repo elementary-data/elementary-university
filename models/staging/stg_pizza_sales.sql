@@ -11,6 +11,7 @@ renamed as (
         ---------- ids
         pizza_id,
         order_id,
+        customer_id,
 
         ---------- text / name
         pizza_name_id,
