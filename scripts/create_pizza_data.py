@@ -47,7 +47,7 @@ with open("ingredients.csv", "w", newline='', encoding='utf-8') as f:
 
 # Load existing customer ids from jaffle-data
 customer_ids = []
-with open("jaffle-data/raw_customers.csv", newline="", encoding="utf-8") as f:
+with open("./../jaffle-data/raw_customers.csv", newline="", encoding="utf-8") as f:
     reader = csv.DictReader(f)
     for row in reader:
         customer_ids.append(row["id"])
