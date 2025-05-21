@@ -26,6 +26,10 @@ models:
       - name: order_id
         description: Identifier linking the pizza to its parent order.
 
+      - name: customer_id
+        description: Customer associated with the order. Some ids originate from
+          the jaffle shop seeds, others are randomly generated.
+
       - name: pizza_name_id
         description: Unique identifier for the pizza type.
 
