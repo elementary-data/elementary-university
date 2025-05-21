@@ -1,0 +1,69 @@
+version: 2
+
+models:
+  - name: stg_pizza_sales
+    description: >
+      Cleaned and renamed synthetic pizza sales dataset with key fields grouped by type 
+      (IDs, product details, order values, time, and ingredients).
+    config:
+      elementary:
+        timestamp_column: order_date
+    data_tests:
+      - elementary.volume_anomalies:
+          time_bucket:
+            period: day
+            count: 1
+          detection_period:
+            period: day
+            count: 2
+          training_period:
+            period: month
+            count: 2
+    columns:
+      - name: pizza_id
+        description: Unique identifier for the pizza item in the order.
+
+      - name: order_id
+        description: Identifier linking the pizza to its parent order.
+
+      - name: pizza_name_id
+        description: Unique identifier for the pizza type.
+
+      - name: pizza_name
+        description: Descriptive name of the pizza (e.g., "Margherita").
+
+      - name: pizza_category
+        description: Category classification of the pizza (e.g., "Classic", "Veggie").
+
+      - name: pizza_size
+        description: Size of the pizza (e.g., "S", "M", "L", "XL").
+
+      - name: quantity
+        description: Number of units of this pizza in the order.
+
+      - name: unit_price
+        description: Price for a single unit of this pizza.
+
+      - name: total_price
+        description: Total price for this line item (quantity * unit_price).
+        data_tests:
+          - elementary.column_anomalies:
+              column_anomalies:
+                - average
+              time_bucket:
+                period: day
+                count: 1
+              tags: ['elementary']
+
+      - name: order_date
+        description: Date on which the order was placed.
+
+      - name: order_time
+        description: Time at which the order was placed.
+
+      - name: ingredient_names
+        description: Pipe-delimited list of ingredient names used in the pizza.
+
+      - name: ingredient_ids
+        description: Pipe-delimited list of IDs corresponding to the ingredients.
+
